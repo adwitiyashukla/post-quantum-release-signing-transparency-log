@@ -96,7 +96,7 @@ class _Handler(web.Handler):
 
     def do_POST(self):
         if self.path != "/add-checkpoint":
-            return self.send(404, b"not found\n")
+            return self.refuse(404, b"not found\n")
         body = self.body(MAX_BODY)
         if body is not None:
             status, ctype, payload = self.server.witness.add_checkpoint(body)

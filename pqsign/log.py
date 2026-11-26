@@ -255,7 +255,7 @@ class _Handler(web.Handler):
 
     def do_POST(self):
         if self.path != "/add":
-            return self.send(404, b"not found\n")
+            return self.refuse(404, b"not found\n")
         data = self.body(self.server.max_entry)
         if data is None:
             return

@@ -303,6 +303,19 @@ def test_log_rejects_bad_submissions(stack, tmp_path):
             assert e.code == 404
 
 
+def test_refused_upload_is_read_before_the_connection_closes(stack):
+    sock = socket.create_connection(("127.0.0.1", stack.httpd.server_address[1]), timeout=5)
+    sock.sendall(b"POST /add HTTP/1.1\r\nHost: x\r\nContent-Length: 9000\r\n\r\n")
+    reply = b""
+    while chunk := sock.recv(4096):
+        reply += chunk
+    assert reply.startswith(b"HTTP/1.0 413")
+    for _ in range(3):
+        sock.sendall(b"x" * 3000)
+        time.sleep(0.2)
+    sock.close()
+
+
 def test_slow_and_idle_clients_are_cut_off(tmp_path):
     lg = plain_log(tmp_path)
     seq = log.Sequencer(lg, 5, 256, 10).start()

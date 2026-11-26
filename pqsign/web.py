@@ -1,4 +1,5 @@
 import re
+import socket
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -47,14 +48,27 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def refuse(self, status: int, body: bytes) -> None:
+        self.send(status, body)
+        self.close_connection = True
+        end = time.monotonic() + self.server.request_timeout
+        try:
+            self.connection.shutdown(socket.SHUT_WR)
+            while (left := end - time.monotonic()) > 0:
+                self.connection.settimeout(left)
+                if not self.connection.recv(65536):
+                    break
+        except OSError:
+            pass
+
     def body(self, limit: int) -> bytes | None:
         raw = self.headers.get("Content-Length", "")
         if not LENGTH.fullmatch(raw) or int(raw) == 0:
-            self.send(400, b"bad Content-Length\n")
+            self.refuse(400, b"bad Content-Length\n")
             return None
         size = int(raw)
         if size > limit:
-            self.send(413, b"body too large\n")
+            self.refuse(413, b"body too large\n")
             return None
         deadline = time.monotonic() + self.server.request_timeout
         data = bytearray()
