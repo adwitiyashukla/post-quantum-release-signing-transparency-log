@@ -80,7 +80,7 @@ Measured with `pqsign bench` on my HP OmniBook 5 (Intel Core 5 120U, 12 threads,
 | Inclusion proof read from tiles at 50,000 entries | 4.2 ms, 16 hashes |
 | Monitor full audit | 5,657 entries/s |
 
-Most of the 222 ms is the 100 ms batch window (`batch_ms`), the fsyncs and the witness round trips, not the crypto. The full test suite (359 tests) passes on the same laptop in about 20 seconds.
+Most of the 222 ms is the 100 ms batch window (`batch_ms`), the fsyncs and the witness round trips, not the crypto. The full test suite (360 tests) passes on the same laptop in about 20 seconds.
 
 ## How I checked it
 

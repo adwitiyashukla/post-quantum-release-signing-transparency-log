@@ -343,6 +343,16 @@ def test_slow_and_idle_clients_are_cut_off(tmp_path):
         seq.stop()
 
 
+def test_servers_start_without_a_reverse_dns_lookup(tmp_path, monkeypatch):
+    def lookup(name=""):
+        raise AssertionError(f"reverse DNS lookup of {name}")
+
+    monkeypatch.setattr(socket, "getfqdn", lookup)
+    w = witness.Witness(note.generate("test.local/w", note.MLDSA44), {}, tmp_path / "w.json")
+    httpd = witness.serve(w, "127.0.0.1", 0)
+    httpd.server_close()
+
+
 def test_monitor_flags_unexpected_release(stack, tmp_path):
     a, b, c = files(tmp_path, "m-1.zip", "m-2.zip", "m-3.zip")
     for p in (a, b, c):

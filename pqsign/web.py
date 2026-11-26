@@ -1,5 +1,6 @@
 import re
 import socket
+import socketserver
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -14,6 +15,10 @@ class Server(ThreadingHTTPServer):
         self.slots = threading.BoundedSemaphore(max_connections)
         self.request_timeout = timeout
         super().__init__(address, handler)
+
+    def server_bind(self):
+        socketserver.TCPServer.server_bind(self)
+        self.server_name, self.server_port = self.server_address[:2]
 
     def process_request(self, request, client_address):
         if not self.slots.acquire(blocking=False):
