@@ -1,0 +1,33 @@
+[log]
+origin = "localhost/pqsign"
+listen = "127.0.0.1:7380"
+batch_ms = 100
+max_batch = 256
+max_pending = 4096
+max_entry_bytes = 8192
+submit_timeout_s = 30
+
+[witnesses]
+quorum = 2
+timeout_s = 5
+grace_ms = 250
+max_future_s = 600
+nodes = [
+  { name = "localhost/witness-1", listen = "127.0.0.1:7381" },
+  { name = "localhost/witness-2", listen = "127.0.0.1:7382" },
+  { name = "localhost/witness-3", listen = "127.0.0.1:7383" },
+]
+
+[http]
+max_connections = 64
+request_timeout_s = 10
+
+[signer]
+name = "localhost/release"
+scrypt_log_n = 17
+
+[monitor]
+expected = "SHA256SUMS"
+
+[paths]
+state = "local"

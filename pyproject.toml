@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "post-quantum-release-signing-transparency-log"
+version = "0.1.0"
+description = "Post-quantum release signing with a witnessed transparency log"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["cryptography>=50"]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "hypothesis>=6", "ruff>=0.6"]
+
+[project.scripts]
+pqsign = "pqsign.cli:main"
+
+[tool.setuptools]
+packages = ["pqsign"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
